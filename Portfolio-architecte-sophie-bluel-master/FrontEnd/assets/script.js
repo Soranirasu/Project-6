@@ -18,7 +18,7 @@ try {
                 newFigure.classList.add('boutons');
                 newFigure.setAttribute("categorie", work.categoryId);
                 //Ajouter la balise <figure> qu'on vient de créer dans la galerie déjà existante
-                document.querySelector("div.gallery").appendChild(newFigure);1
+                document.querySelector("div.gallery").appendChild(newFigure); 1
 
             });
 
@@ -50,15 +50,36 @@ try {
                     //Repasser la div "ajout" en display:none et la div "modale-1" en display:block lorsqu'on ferme la modale
                     document.querySelector('.ajout').style.display = 'none';
                     document.querySelector('.modale-1').style.display = 'block';
+
+                    //Réinitialiser le contenu de l'input à la fermeture
+                    let fileInput = document.getElementById('fileInput');
+                    fileInput.value = null;
+
+                    //Afficher de nouveau l'icône, le bouton et le paragraphe
+                    let basicContent = document.querySelector(".basic-content");
+                    basicContent.style.display = 'flex';
+
+                    //Masquer l'image ajoutée
+
                 }
             })
 
-            //Fermer la modale quand on clique sur la 1ere croix
+            //Fermer la modale quand on clique sur une croix
             const iconCross = document.querySelectorAll(".fa-xmark");
 
             iconCross.forEach(icon => {
-                icon.addEventListener('click', function() {
+                icon.addEventListener('click', function () {
                     document.querySelector('#modale').style.display = 'none';
+
+                    //Intervertir l'affichage des div dans la modale lorsque cette dernière se ferme
+                    document.querySelector('.ajout').style.display = 'none';
+                    document.querySelector('.modale-1').style.display = 'block';
+
+                    fileInput.value = null;
+
+                    //Afficher de nouveau l'icône, le bouton et le paragraphe
+                    let basicContent = document.querySelector(".basic-content");
+                    basicContent.style.display = 'flex';
                 });
             });
         })
@@ -142,6 +163,24 @@ if (token) {
     }
 }
 
+// Gestrionnaire d'événements pour le logout
+logoutButton.addEventListener('click', function () {
+    //Supprimer le token d'authentification du local storage
+    localStorage.removeItem('monToken');
+
+    // Cacher la barre et afficher le bouton de connection
+    const topBar = document.getElementById('top-bar');
+    if (topBar) {
+        topBar.style.display = 'none';
+    }
+    if (loginButton) {
+        loginButton.style.display = 'flex';
+    }
+
+    // Cacher le bouton de déconnection
+    logoutButton.style.display = 'none';
+});
+
 //Ouvrir la modale au clic sur le logo du mode edition
 // Sélectionner la modale et le logo "Mode édition"
 const editModal = document.getElementById('modale');
@@ -156,7 +195,9 @@ function galleryInvoc(donnees) {
         let newFigure = document.createElement('figure');
         newFigure.innerHTML = `
         <div class="imgGallery"> 
-            <i class="fa-solid fa-trash-can"></i> 
+            <div class="corbeille">
+                <i class="fa-solid fa-trash-can"></i> 
+            </div>    
         </div>   
         `
         newFigure.querySelector(".imgGallery").style.backgroundImage = `url("${work.imageUrl}")`
@@ -212,6 +253,116 @@ addButton.addEventListener('click', function () {
 
     fileInput.addEventListener('change', changeContent);
 });
+
+//Ajout des catégories dans l'onglet déroulant Catégories
+fetch("http://localhost:5678/api/categories")
+    .then(response => response.json())
+    .then(data => {
+        const selectElement = document.getElementById('category-select');
+
+        // On réinitialise les options existantes
+        selectElement.innerHTML = '';
+
+        // Ajout d'une option pour chaque catégorie
+        data.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id; // Définir la valeur de l'option sur l'identifiant de la catégorie
+            option.textContent = category.name; // Définir le texte de l'option sur le nom de la catégorie
+            selectElement.appendChild(option); // Ajouter l'option à l'élément select
+        });
+    })
+    .catch(error => console.error('Erreur lors du chargement des catégories :', error));
+
+
+
+//Récupérer les données de saisies sous forme formData
+const fileInput = document.getElementById('fileInput');
+const titleInput = document.getElementById('titre');
+const categorySelect = document.getElementById('category-select');
+
+const submitButton = document.getElementById('submitButton'); //Ajout de l'addEventListener au bouton d'envoi
+submitButton.addEventListener('click', () => {
+    const formData = new FormData();
+    //Ajout des données de l'image
+    const imageFile = fileInput.files[0];
+    formData.append('image', imageFile);
+
+    //Ajout du titre
+    const title = titleInput.value;
+    formData.append('title', title);
+
+    //Ajout de la catégorie
+    const category = categorySelect.value;
+    formData.append('category', category);
+
+    //Envoi des données récupérées à l'API via feth
+    fetch('http://localhost:5678/api/works', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+        //Gestion de la réponse de l'API
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            }
+            else {
+                switch (response.status) {
+                    case 201:
+                        break;
+                    case 400:
+                        break;
+                    case 401:
+                        break;
+                    default:
+                        alert("Erreur inconnue");
+                }
+
+            }
+        })
+
+});
+
+
+
+//Suppression des images de la galerie
+const trashIcons = document.querySelectorAll('.fa-trash-can');
+//Gestionnaire d'événement pour CHAQUE icône corbeille
+trashIcons.forEach(trashIcon => {
+    trashIcon.addEventListener('click', function () {
+        fetch(`http://localhost:5678/api/works/${work.id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la suppression du travail');
+            }
+            console.log('Travail supprimé avec succès')
+        })
+        .then(response => {
+            switch (response.status) {
+                case 200:
+                    break;
+                case 401:
+                    break;
+                case 500:
+                    break;
+                default:
+                    alert("Erreur inconnue");
+
+            }
+        })
+        .catch(error => {
+            console.error('Erreur : ', error);
+        })
+
+})
+
+
 
 
 

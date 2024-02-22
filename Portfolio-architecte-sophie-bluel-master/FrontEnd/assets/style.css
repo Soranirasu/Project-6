@@ -404,13 +404,15 @@ footer nav ul {
 .imgGallery {
 	width: 100%;
 	height: 200px;
-	background-size: contain;
+	background-size: cover;
 }
 
-.imgGallery i {
-	margin-left: 85%;
+.corbeille {
+	background-color: #000000;
+	width: 20px;
+    padding: 5px 0px 5px 8px;
+    margin-left: auto;
 }
-
 
 .ajout {
 	display: none;
