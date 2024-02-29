@@ -8,17 +8,19 @@ try {
 
         .then(donnees => {
             console.log(donnees);
+            const figuresGallery = document.querySelector('.figures-gallery');
             //Une boucle pour chaque work
             donnees.forEach((work) => {
                 //création de la balise <figure>
                 let newFigure = document.createElement('figure');
+                newFigure.id = work.id;
                 newFigure.innerHTML = `<img src="${work.imageUrl}" alt="${work.title}">
         <figcaption>${work.title}</figcaption>`
                 //Ajout d'une classe à <figure> pour pouvoir sélectionner les boutons
                 newFigure.classList.add('boutons');
                 newFigure.setAttribute("categorie", work.categoryId);
                 //Ajouter la balise <figure> qu'on vient de créer dans la galerie déjà existante
-                document.querySelector("div.gallery").appendChild(newFigure); 1
+                figuresGallery.appendChild(newFigure);
 
             });
 
@@ -59,8 +61,15 @@ try {
                     let basicContent = document.querySelector(".basic-content");
                     basicContent.style.display = 'flex';
 
-                    //Masquer l'image ajoutée
-
+                    //Supprimer l'image ajoutée à la fermeture de la modale
+                    const addedImage = document.querySelector('.ajout-button img');
+                    if (addedImage) {
+                        addedImage.remove();
+                    }
+                    // Réinitialiser le champ de l'image
+                    fileInput.value = null;
+                    titleInput.value = '';
+                    categorySelect.selectedIndex = 0;
                 }
             })
 
@@ -80,6 +89,17 @@ try {
                     //Afficher de nouveau l'icône, le bouton et le paragraphe
                     let basicContent = document.querySelector(".basic-content");
                     basicContent.style.display = 'flex';
+
+                    //Pour supprimer l'image ajoutée
+                    // Masquer l'image ajoutée
+                    const addedImage = document.querySelector('.ajout-button img');
+                    if (addedImage) {
+                        addedImage.remove();
+                    }
+                    // Réinitialiser le champ de l'image
+                    fileInput.value = null;
+                    titleInput.value = '';
+                    categorySelect.selectedIndex = 0;
                 });
             });
         })
@@ -196,7 +216,7 @@ function galleryInvoc(donnees) {
         newFigure.innerHTML = `
         <div class="imgGallery"> 
             <div class="corbeille">
-                <i class="fa-solid fa-trash-can"></i> 
+                <i class="fa-solid fa-trash-can" data-work-id="${work.id}"></i> 
             </div>    
         </div>   
         `
@@ -208,6 +228,7 @@ function galleryInvoc(donnees) {
         document.querySelector(".modale-gallery").appendChild(newFigure);
 
     });
+    suppression();
 }
 
 //création d'une fonction qui contiendra tout ce qu'on a dans l'addEventListener ('change)
@@ -274,6 +295,57 @@ fetch("http://localhost:5678/api/categories")
     .catch(error => console.error('Erreur lors du chargement des catégories :', error));
 
 
+///////////
+// Fonction pour ajouter un nouveau travail dans les galeries
+function addWorkToGalleries(work) {
+    // Ajout dans la Galerie Principale
+    const mainGallery = document.querySelector("div.gallery");
+    const newFigureMainGallery = document.createElement('figure');
+    newFigureMainGallery.innerHTML = `
+        <img src="${work.imageUrl}" alt="${work.title}">
+        <figcaption>${work.title}</figcaption>
+    `;
+    mainGallery.appendChild(newFigureMainGallery);
+
+    // Ajout dans la Galerie de la Modale
+    const modalGallery = document.querySelector(".modale-gallery");
+    const newFigureModalGallery = document.createElement('figure');
+    newFigureModalGallery.innerHTML = `
+        <div class="imgGallery"> 
+            <div class="corbeille">
+                <i class="fa-solid fa-trash-can" data-work-id="${work.id}"></i> 
+            </div>
+        </div>   
+    `;
+    modalGallery.appendChild(newFigureModalGallery);
+}
+
+// Fonction pour envoyer le nouveau travail au serveur
+function addNewWork(formData) {
+    const token = localStorage.getItem('monToken');
+    fetch('http://localhost:5678/api/works', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Erreur lors de l\'ajout du travail');
+            }
+        })
+        .then(work => {
+            // Ajout du travail aux galeries
+            addWorkToGalleries(work);
+        })
+        .catch(error => {
+            console.error('Erreur : ', error);
+        });
+}
+//////////////
 
 //Récupérer les données de saisies sous forme formData
 const fileInput = document.getElementById('fileInput');
@@ -296,12 +368,15 @@ submitButton.addEventListener('click', () => {
     formData.append('category', category);
 
     //Envoi des données récupérées à l'API via feth
+    const token = localStorage.getItem('monToken');
+    console.log(formData.get('category'));
+
     fetch('http://localhost:5678/api/works', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
         method: 'POST',
         body: formData,
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
     })
         //Gestion de la réponse de l'API
         .then(response => {
@@ -322,45 +397,53 @@ submitButton.addEventListener('click', () => {
 
             }
         })
+        .then(data => {
+            //Ajout des nouveaux travaux sans reload
+            addNewWork(formData);
 
+            //Fermer la modale une fois l'ajout réussi
+            const modale = document.querySelector(".modale");
+            modale.style.display = "none";
+        })
+        .catch(error => {
+            console.error("Erreur lors de l'ajout d'un nouveau travail : ", error);
+        });
 });
 
 
+function suppression() {
+    //Suppression des images de la galerie
+    const trashIcons = document.querySelectorAll('.fa-trash-can');
+    //Gestionnaire d'événement pour CHAQUE icône corbeille
+    console.log(trashIcons);
+    trashIcons.forEach(trashIcon => {
+        trashIcon.addEventListener('click', function (event) {
+            const workId = event.target.getAttribute('data-work-id');
+            console.log(workId);
+            const token = localStorage.getItem('monToken');
+            console.log("Token avant envoi de la requête DELETE :", token);
 
-//Suppression des images de la galerie
-const trashIcons = document.querySelectorAll('.fa-trash-can');
-//Gestionnaire d'événement pour CHAQUE icône corbeille
-trashIcons.forEach(trashIcon => {
-    trashIcon.addEventListener('click', function () {
-        fetch(`http://localhost:5678/api/works/${work.id}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': 'Bearer ' + token }
+            fetch(`http://localhost:5678/api/works/${workId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+
+                .then(response => {
+                    console.log(response);
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la suppression du travail');
+                    }
+                    console.log('Travail supprimé avec succès')
+
+                    console.log(trashIcon.closest("figure"));
+                    trashIcon.closest("figure").remove();
+
+                    document.getElementById(workId).remove();
+                })
+
         })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur lors de la suppression du travail');
-            }
-            console.log('Travail supprimé avec succès')
-        })
-        .then(response => {
-            switch (response.status) {
-                case 200:
-                    break;
-                case 401:
-                    break;
-                case 500:
-                    break;
-                default:
-                    alert("Erreur inconnue");
-
-            }
-        })
-        .catch(error => {
-            console.error('Erreur : ', error);
-        })
-
-})
+}
 
 
 

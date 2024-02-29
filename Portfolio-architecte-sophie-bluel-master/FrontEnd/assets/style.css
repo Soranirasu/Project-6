@@ -226,7 +226,8 @@ li:hover {
 
 .gallery {
 	width: 100%;
-	display: grid;
+	display: flex;
+	flex-direction: column;
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-column-gap: 20px;
 	grid-row-gap: 20px;
@@ -235,6 +236,23 @@ li:hover {
 .gallery img {
 	width: 100%;
 
+}
+
+.figures-gallery {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 15px;
+}
+
+.figures-gallery figure {
+	width: 32%;
+}
+
+.figures-gallery img {
+	width: 365px;
+	height: 489px;
 }
 
 #contact {
@@ -373,6 +391,9 @@ footer nav ul {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-around;
+	overflow: hidden scroll;
+	white-space: nowrap;
+	height: 600px;
 }
 
 .fa-trash-can {
