@@ -299,7 +299,7 @@ fetch("http://localhost:5678/api/categories")
 // Fonction pour ajouter un nouveau travail dans les galeries
 function addWorkToGalleries(work) {
     // Ajout dans la Galerie Principale
-    const mainGallery = document.querySelector("div.gallery");
+    const mainGallery = document.querySelector(".figures-gallery");
     const newFigureMainGallery = document.createElement('figure');
     newFigureMainGallery.innerHTML = `
         <img src="${work.imageUrl}" alt="${work.title}">
