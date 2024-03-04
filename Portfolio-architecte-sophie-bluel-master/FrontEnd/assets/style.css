@@ -387,9 +387,13 @@ footer nav ul {
 	background-color: #fefefe;
 	padding: 20px;
 	border: 1px solid #888;
-	width: 45%;
-	height: 80%;
+	width: 42%;
+	height: 70%;
 	border-radius: 10px;
+}
+
+.modale hr {
+	margin: 0% 15% 5% 15%;
 }
 
 .txt-icone {
@@ -401,6 +405,7 @@ footer nav ul {
 .txt-icone h3 {
 	margin: auto;
 	font-size: x-large;
+	margin-top: 35px;
 
 }
 
@@ -411,7 +416,7 @@ footer nav ul {
 	justify-content: space-around;
 	overflow: hidden scroll;
 	white-space: nowrap;
-	padding: 50px;
+	padding: 35px 70px;
 	gap: 10px;
 }
 
@@ -430,10 +435,11 @@ footer nav ul {
 	font-weight: 700;
 	color: white;
 	background-color: #1D6154;
-	width: 180px;
 	text-align: center;
 	border-radius: 60px;
 	margin: auto;
+	padding: 12px 35px;
+	border: none;
 }
 
 .figureGallery {
@@ -466,17 +472,19 @@ footer nav ul {
 .ajout h3 {
 	text-align: center;
 	font-size: x-large;
+	padding-top: 35px;
 }
 
 .ajout-button {
 	background-color: aliceblue;
-	margin: 20%;
+	margin: 40px 70px;
+	padding-top: 20px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 }
 
-.basic-content {
+.ajout-button .basic-content {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -486,15 +494,16 @@ footer nav ul {
 .basic-content label {
 	color: #306685;
 	font-family: 'Work Sans';
-	font-size: medium;
-	font-weight: 800;
+	font-weight: bold;
 	background-color: #CBD6DC;
-	padding: 15px 35px;
+	padding: 10px 25px;
 	border-radius: 50px;
 }
 
 .basic-content p {
 	font-size: smaller;
+	margin-top: 5px;
+	margin-bottom: 15px;
 }
 
 .fa-image {
@@ -504,14 +513,41 @@ footer nav ul {
 
 .title {
 	display: flex;
-	align-items: center;
 	flex-direction: column;
+	margin-left: 15%;
+	margin-bottom: 5%;
+}
+
+.title input {
+	width: 80%;
+	margin-top: 2%;
+	height: 50px;
+	font-family: 'Work Sans';
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+    border: none;
+}
+
+.title label {
+	font-weight: 600;
+	font-family: 'Work Sans';
 }
 
 .category-modale {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	margin-left: 15%;
+}
+
+.category-modale select {
+	margin: 10px 0px 40px 0px;
+	width: 82%;
+	height: 50px;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+    border: none;
+}
+
+.category-modale label {
+	font-weight: 600;
 }
 
 .button-valider {
@@ -521,4 +557,9 @@ footer nav ul {
 
 .button-valider input {
 	margin: auto;
+	padding: 12px 35px;
+    border: none;
 }
+
+
+
