@@ -418,6 +418,7 @@ footer nav ul {
 	white-space: nowrap;
 	padding: 35px 70px;
 	gap: 10px;
+	height: 400px;
 }
 
 .fa-trash-can {
@@ -559,6 +560,7 @@ footer nav ul {
 	margin: auto;
 	padding: 12px 35px;
     border: none;
+	background-color: grey;
 }
 
 

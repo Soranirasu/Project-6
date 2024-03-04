@@ -246,8 +246,8 @@ function changeContent(event) {
         let newImage = document.createElement('img');
         newImage.src = URL.createObjectURL(file);
 
-        // Ajouter du style à l'image (hauteur de 250px)
-        newImage.style.height = '250px';
+        // Ajouter du style à l'image (hauteur de 100px)
+        newImage.style.height = '100px';
 
         // Ajouter l'image à la modale
         let ajoutButton = document.querySelector(".ajout-button");
@@ -283,6 +283,12 @@ fetch("http://localhost:5678/api/categories")
 
         // On réinitialise les options existantes
         selectElement.innerHTML = '';
+
+        // Ajouter une option vide en premier
+        const emptyOption = document.createElement('option');
+        emptyOption.value = ''; // Valeur vide
+        emptyOption.textContent = ''; // Texte vide
+        selectElement.appendChild(emptyOption);
 
         // Ajout d'une option pour chaque catégorie
         data.forEach(category => {
@@ -351,8 +357,25 @@ function addNewWork(formData) {
 const fileInput = document.getElementById('fileInput');
 const titleInput = document.getElementById('titre');
 const categorySelect = document.getElementById('category-select');
+const submitButton = document.getElementById('submitButton');
 
-const submitButton = document.getElementById('submitButton'); //Ajout de l'addEventListener au bouton d'envoi
+//Fonction pour changer la couleur du bouton valider lorsque le formulaire est rempli
+function checkFormulaire() {
+    // Vérifier si tous les champs sont remplis
+    if (fileInput.files.length > 0 && titleInput.value !== '' && categorySelect.value !== '') {
+        // Si tous les champs sont remplis, modifier le style du bouton
+        submitButton.style.backgroundColor = '#1D6154';
+    } else {
+        // Sinon, réinitialiser le style du bouton
+        submitButton.style.backgroundColor = 'grey';
+    }
+}
+// Ajouter un gestionnaire d'événements pour surveiller les changements dans les champs du formulaire
+fileInput.addEventListener('change', checkFormulaire);
+titleInput.addEventListener('input', checkFormulaire); // Utiliser 'input' pour surveiller les saisies en temps réel
+categorySelect.addEventListener('change', checkFormulaire);
+
+//Ajout de l'addEventListener au bouton d'envoi
 submitButton.addEventListener('click', () => {
     const formData = new FormData();
     //Ajout des données de l'image
@@ -404,6 +427,27 @@ submitButton.addEventListener('click', () => {
             //Fermer la modale une fois l'ajout réussi
             const modale = document.querySelector(".modale");
             modale.style.display = "none";
+
+             //Intervertir l'affichage des div dans la modale lorsque cette dernière se ferme
+             document.querySelector('.ajout').style.display = 'none';
+             document.querySelector('.modale-1').style.display = 'block';
+
+             fileInput.value = null;
+
+             //Afficher de nouveau l'icône, le bouton et le paragraphe
+             let basicContent = document.querySelector(".basic-content");
+             basicContent.style.display = 'flex';
+
+             //Pour supprimer l'image ajoutée
+             // Masquer l'image ajoutée
+             const addedImage = document.querySelector('.ajout-button img');
+             if (addedImage) {
+                 addedImage.remove();
+             }
+             // Réinitialiser le champ de l'image
+             fileInput.value = null;
+             titleInput.value = '';
+             categorySelect.selectedIndex = 0;
         })
         .catch(error => {
             console.error("Erreur lors de l'ajout d'un nouveau travail : ", error);
