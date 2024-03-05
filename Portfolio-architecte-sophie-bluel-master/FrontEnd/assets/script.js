@@ -300,8 +300,6 @@ fetch("http://localhost:5678/api/categories")
     })
     .catch(error => console.error('Erreur lors du chargement des catégories :', error));
 
-
-///////////
 // Fonction pour ajouter un nouveau travail dans les galeries
 function addWorkToGalleries(work) {
     // Ajout dans la Galerie Principale
@@ -351,7 +349,6 @@ function addNewWork(formData) {
             console.error('Erreur : ', error);
         });
 }
-//////////////
 
 //Récupérer les données de saisies sous forme formData
 const fileInput = document.getElementById('fileInput');
@@ -389,6 +386,7 @@ submitButton.addEventListener('click', () => {
     //Ajout de la catégorie
     const category = categorySelect.value;
     formData.append('category', category);
+
 
     //Envoi des données récupérées à l'API via feth
     const token = localStorage.getItem('monToken');
