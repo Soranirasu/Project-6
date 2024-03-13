@@ -7,7 +7,6 @@ try {
         })
 
         .then(donnees => {
-            console.log(donnees);
             const figuresGallery = document.querySelector('.figures-gallery');
             //Une boucle pour chaque work
             donnees.forEach((work) => {
@@ -28,7 +27,6 @@ try {
             editModeLogo.addEventListener('click', function () {
                 const editModal = document.querySelector('#modale');
 
-                console.log(editModal);
 
                 editModal.style.display = 'block';
 
@@ -105,7 +103,6 @@ try {
         })
 }
 catch (error) {
-    console.log(error);
 }
 
 //Ajout des filtres de catégories pour filtrer les work dans la gallerie
@@ -119,7 +116,6 @@ try {
             let categories = donnees;
             //option permettant d'afficher tous les travaux par défaut
             categories.unshift({ id: 0, name: 'Tous' })
-            console.log(donnees);
             //Une boucle pour générer un boutton pour chaque catégorie
             donnees.forEach((category, index) => {
                 //Création de <button> pour filtrer
@@ -150,8 +146,6 @@ try {
             // Sélectionnez tous les boutons de la classe .filtres
             const filterButtons = document.querySelectorAll('.filtres button');
 
-            console.log(filterButtons);
-
             // Ajout d'un gestionnaire d'événements à chaque bouton
             filterButtons.forEach(button => {
                 button.addEventListener('click', function () {
@@ -169,15 +163,12 @@ try {
         })
 }
 catch (error) {
-    console.log(error);
 }
 
 
 
 // Vérifier si le token est présent dans le local storage
 const token = localStorage.getItem('monToken');
-
-console.log(token);
 
 // Sélectionner le bouton login/logout
 const loginButton = document.querySelector('.nav-login');
@@ -274,7 +265,6 @@ function changeContent(event) {
 let addButton = document.querySelector("#ajouter");
 addButton.addEventListener('click', function () {
     // Logique pour ajouter une nouvelle photo
-    console.log("Ajout");
 
     let modale1 = document.querySelector(".modale-1")
     modale1.style.display = 'none'
@@ -380,7 +370,6 @@ submitButton.addEventListener('click', () => {
 
     //Envoi des données récupérées à l'API via feth
     const token = localStorage.getItem('monToken');
-    console.log(formData.get('category'));
 
     fetch('http://localhost:5678/api/works', {
         headers: {
@@ -447,13 +436,10 @@ function suppression() {
     //Suppression des images de la galerie
     const trashIcons = document.querySelectorAll('.fa-trash-can');
     //Gestionnaire d'événement pour CHAQUE icône corbeille
-    console.log(trashIcons);
     trashIcons.forEach(trashIcon => {
         trashIcon.addEventListener('click', function (event) {
             const workId = event.target.getAttribute('data-work-id');
-            console.log(workId);
             const token = localStorage.getItem('monToken');
-            console.log("Token avant envoi de la requête DELETE :", token);
 
             fetch(`http://localhost:5678/api/works/${workId}`, {
                 method: 'DELETE',
@@ -461,13 +447,10 @@ function suppression() {
             })
 
                 .then(response => {
-                    console.log(response);
                     if (!response.ok) {
                         throw new Error('Erreur lors de la suppression du travail');
                     }
-                    console.log('Travail supprimé avec succès')
 
-                    console.log(trashIcon.closest("figure"));
                     trashIcon.closest("figure").remove();
 
                     document.getElementById(workId).remove();

@@ -141,13 +141,20 @@ body {
 	font-family: 'Work Sans';
 	font-size: 14px;
 	background-color: rgb(246, 246, 235);
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
+
+main {
+	flex: 1;
+}
+
 
 header {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	margin: 50px 0
 }
 
 section {
@@ -320,6 +327,11 @@ input[type="submit"] {
 	border-radius: 60px;
 }
 
+footer {
+	height: 100px;
+	line-height: 100px;
+}
+
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
@@ -327,6 +339,12 @@ footer nav ul {
 }
 
 /**Login page**/
+.user-login-formulary {
+	width: 50%;
+	margin: auto;
+	margin-top: 50px;
+}
+
 .user-login-formulary form {
 	display: flex;
 	flex-direction: column;
@@ -335,13 +353,32 @@ footer nav ul {
 
 .user-login-formulary h2 {
 	text-align: center;
+	margin-bottom: 30px;
 }
 
 .user-login-formulary a {
 	text-align: center;
 }
 
+.user-login-formulary label {
+	margin: 15px 0px;
+}
+
+.user-login-formulary input {
+	height: 50px;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	padding: 10px;
+	box-sizing: border-box;
+	margin-bottom: 15px;
+}
+
 .nav-logout {
+	display: none;
+}
+
+.error-msg {
+	color: red;
 	display: none;
 }
 
@@ -527,7 +564,7 @@ footer nav ul {
 	height: 50px;
 	font-family: 'Work Sans';
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
-    border: none;
+	border: none;
 }
 
 .title label {
@@ -546,7 +583,7 @@ footer nav ul {
 	width: 82%;
 	height: 50px;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
-    border: none;
+	border: none;
 }
 
 .category-modale label {
@@ -561,9 +598,6 @@ footer nav ul {
 .button-valider input {
 	margin: auto;
 	padding: 12px 35px;
-    border: none;
+	border: none;
 	background-color: grey;
 }
-
-
-

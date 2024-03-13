@@ -24,6 +24,7 @@ document.getElementById('user-login-form').addEventListener('submit', function (
     })
         .then(response => {
             if (!response.ok) {
+                document.querySelector('.error-msg').style.display = 'block'; // Afficher le message d'erreur
                 throw new Error('La requête a échoué avec le statut ' + response.status);
             }
             return response.json();
@@ -36,9 +37,6 @@ document.getElementById('user-login-form').addEventListener('submit', function (
             // Stocker le token dans le local storage
             localStorage.setItem('monToken', token);
 
-            // Faire quelque chose avec le token si nécessaire
-            console.log('Token récupéré :', token);
-
             // Rediriger vers index.html si la connexion est réussie
             window.location.href = 'index.html';
 
@@ -46,6 +44,8 @@ document.getElementById('user-login-form').addEventListener('submit', function (
         .catch(error => {
             // Gérer les erreurs
             console.error('Erreur lors de la requête :', error);
+            document.querySelector('.error-msg').style.display = 'block'; // Afficher le message d'erreur
+
         });
 
 })
